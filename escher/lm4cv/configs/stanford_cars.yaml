@@ -1,0 +1,25 @@
+# important features for the pictures
+dataset: cars
+attributes: cars
+cluster_feature_method: linear # [kmeans, random, linear]
+# model_type: open_clip
+model_type: clip
+# model_size: hf-hub:laion/CLIP-ViT-L-14-laion2B-s32B-b82K
+model_size: ViT-L/14
+# model_size: ViT-L/14@336px
+# model_size: ViT-B/32
+mahalanobis: true
+division_power: 3
+linear_epochs: 1000
+reinit: false # True/False
+num_attributes: full # [16, 32, 64, 128, 256, 512]
+seed: 0
+
+# optimization parameters
+lr: 0.0001
+batch_size: 4096
+epochs: -2000
+
+# model structure
+linear_model: [linear, bn, linear] 
+score_model: [bn, linear] 

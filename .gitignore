@@ -1,0 +1,13 @@
+datasets/*
+cache/*
+__pycache__/*vision/
+LM4CV/*
+*.pyc
+logs/
+descriptors/
+cache/
+vision/
+representation_conditioning/
+multirun/
+**/__pycache__/
+outputs/

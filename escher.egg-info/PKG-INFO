@@ -1,0 +1,88 @@
+Metadata-Version: 2.4
+Name: escher
+Version: 0.0.1
+Summary: Escher
+Author: Patrick Yuan
+Author-email: Atharva Sehgal <atharva.sehgal@gmail.com>
+Project-URL: Homepage, https://trishullab.github.io/escher-web/
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: annotated-types==0.7.0
+Requires-Dist: anyio==4.8.0
+Requires-Dist: backoff==2.2.1
+Requires-Dist: clip@ git+https://github.com/openai/CLIP.git@main#egg=clip
+Requires-Dist: distro==1.9.0
+Requires-Dist: fsspec==2024.12.0
+Requires-Dist: ftfy==6.3.1
+Requires-Dist: h11==0.14.0
+Requires-Dist: httpcore==1.0.7
+Requires-Dist: httpx==0.28.1
+Requires-Dist: huggingface-hub==0.27.1
+Requires-Dist: imagenetv2-pytorch@ git+https://github.com/modestyachts/ImageNetV2_pytorch.git@master#egg=imagenetv2-pytorch
+Requires-Dist: jiter==0.8.2
+Requires-Dist: levenshtein==0.26.1
+Requires-Dist: open-clip-torch==2.30.0
+Requires-Dist: openai==1.59.9
+Requires-Dist: pydantic==2.10.5
+Requires-Dist: pydantic-core==2.27.2
+Requires-Dist: rapidfuzz==3.11.0
+Requires-Dist: regex==2024.11.6
+Requires-Dist: safetensors==0.5.2
+Requires-Dist: sentence-transformers==3.3.1
+Requires-Dist: sniffio==1.3.1
+Requires-Dist: timm==1.0.14
+Requires-Dist: tokenizers==0.21.0
+Requires-Dist: transformers==4.48.1
+Requires-Dist: pandas==2.2.3
+
+# Escher: Self-Evolving Visual Concept Library using Vision-Language Critics
+
+## Getting started
+
+__With vLLM__ (if using local LLM):
+```bash
+$ conda env create --name vllm python=3.9
+$ conda activate vllm
+$ pip install vllm
+$ CUDA_VISIBLE_DEVICES=0,1,2,3 vllm meta-llama/Llama-3.1-8B-Instruct --api-key token-abc123 --port 11440 --tensor-parallel-size 4 --disable-log-requests
+# ^ This is a debugging server. Running with meta-llama/Llama-3.3-70B-Instruct is recommended.
+$ CUDA_VISIBLE_DEVICES=0,1,2,3 vllm serve meta-llama/Llama-3.3-70B-Instruct  --api-key token-abc123 --port 11440 --tensor-parallel-size 4 --disable-log-requests --max-model-len 70352
+# ^ See if this fits. Otherwise, quantized models also work well.
+```
+
+
+__With Escher__:
+```bash
+$ conda create --name escher-dev python=3.12
+$ conda activate escher-dev
+$ pip install -e . # Installs escher in editable mode
+$ vim cbd_utils/server.py
+# Edit this file to point to the correct GPT model, API key location, etc.
+$ CUDA_VISIBLE_DEVICES=4 python escher/iteration.py --dataset cub --topk 50 --prompt_type confound_w_descriptors_with_conversational_history --distance_type confusion --subselect -1 --decay_factor 10 --classwise_topk 10 --num_iters 100 --perc_labels 0.0 --perc_initial_descriptors 1.00 --algorithm lm4cv --salt "1.debug"
+# This runs with openai-gpt-3.5-turbo.
+$ CUDA_VISIBLE_DEVICES=1 python escher/iteration.py --dataset cub --topk 50 --openai_model LOCAL:meta-llama/Llama-3.1-8B-Instruct --prompt_type confound_w_descriptors_with_conversational_history --distance_type confusion --subselect -1 --decay_factor 10 --classwise_topk 10 --num_iters 100 --perc_labels 0.0 --perc_initial_descriptors 1.00 --algorithm lm4cv --salt "1.debug"
+# Same command but the LOCAL: prefix makes it use the vllm_client and calls the LLama-3.1-8B-Instruct model.
+
+# To run on multiple datasets, use cmds.sh
+```
+
+
+## General Structure
+
+- `escher/`
+    - `iteration.py`: Main file to run the self-evolving process. This parses the command line arguments, loads the initial set of concepts defined in `descriptors/cbd_descriptors/descriptors_{dataset}.json`, and instantiates the model.
+    - `library.py`: A wrapper around the library of concepts. This class is responsible for loading the concepts, updating the concepts, and saving the concepts.
+    - `model.py`: The abstract class for a concept-bottleneck based model.
+    - `model_zero_shot.py`: Implementation of the model which does not train any parameters.
+    - `model_lm4cv.py`: Implementation of the model which trains the parameters of the model.
+- `dataset_loader.py`: Main entry point for loading the dataset.
+- `cbd_utils`: Many utility functions for GPT calling / training / evaluation / caching useful for implementing a "zeroshot" Escher model.
+- `lm4cv`: Many utility functions for implementing a "lm4cv" Escher model.
+- `descriptors/`: Contains the initial descriptors for each dataset.
+- `cmds.sh`: A set of hacky scripts to run `escher` on multiple datasets.
+
+
