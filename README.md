@@ -57,5 +57,5 @@ $ CUDA_VISIBLE_DEVICES=0,1,2,3 vllm serve meta-llama/Llama-3.3-70B-Instruct  --a
     - `lm4cv`: Many utility functions for implementing a "lm4cv" Escher model.
 - `descriptors/`: Contains the initial descriptors for each dataset.
 - `cmds.sh`: A set of hacky scripts to run `escher` on multiple datasets.
-
+- `cache/`: This is a cache for the image/text embeddings for all the datasets. This file is too big to keep on GitHub, but a zipped version of this folder is available on this google drive link: [Link](https://drive.google.com/file/d/1IpplAdSuvvN1vd2jICe1VEkVH_3JLeut/view?usp=sharing) or if you email me at `atharvas@utexas.edu`. I hope this eases some of the pain of setting up the datasets, but I'm not equipped to answer general questions about dataset setup unfortunately.
 
