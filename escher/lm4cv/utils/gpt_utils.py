@@ -14,7 +14,7 @@ import openai
 import torch
 from tqdm.auto import tqdm
 from escher.cbd_utils.server import openai_client, OPENAI_TEMP, OPENAI_MODEL
-from escher.cbd_utils import find_json_block
+from escher.cbd_utils import find_json_block, lock
 
 
 def message_builder_cls(cls):
