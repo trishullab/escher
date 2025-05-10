@@ -364,37 +364,6 @@ def merge_graph_nodes(graph, node1, node2):
     return graph
 
 
-def deduplicate_attributes(
-    graph: nx.DiGraph, sim_threshold: float
-) -> Tuple[list, nx.DiGraph]:
-    attributes = list(graph.nodes())
-    embeddings = get_clip_text_embeddings(attributes, use_tqdm=True).cpu().numpy()
-
-    deduplicated_attributes = []
-    merged_nodes = set()
-    tuple_merged = set()
-
-    all_cosine_sim = cosine_similarity(embeddings, embeddings)
-
-    for i, attr1 in enumerate(attributes):
-        if attr1 in merged_nodes:
-            continue
-        is_unique = True
-        for j, attr2 in enumerate(attributes):
-            if i != j and attr2 not in merged_nodes:
-                sim = all_cosine_sim[i, j]
-                if sim >= sim_threshold:
-                    graph = merge_graph_nodes(graph, attr1, attr2)
-                    merged_nodes.add(attr2)
-                    tuple_merged.add((attr1, attr2, float(sim)))
-                    is_unique = False
-
-        if is_unique or attr1 not in deduplicated_attributes:
-            deduplicated_attributes.append(attr1)
-
-    return deduplicated_attributes, graph, tuple_merged
-
-
 def get_gpt_completions(
     messages_list,
     openai_model,

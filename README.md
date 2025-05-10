@@ -41,6 +41,40 @@ $ CUDA_VISIBLE_DEVICES=0,1,2,3 vllm serve meta-llama/Llama-3.3-70B-Instruct  --a
 # ^ See if this fits. I wasn't able to get it work and had to use a quantized model (which also work well).
 ```
 
+## Generating initial concepts
+
+The respository comes with initial descriptors generated with `gpt-4o` and `gpt-3.5-turbo`. However, these initial descriptors need to be regenerated for each new LLM. The code to do this is borrowed from Sachit repo [here](https://github.com/sachit-menon/classify_by_description_release/blob/d1a3d8920af89bd0d6a692ed3afeb277df46e082/generate_descriptors.py#L12) and is available in `escher/utils/generate_cbd_descriptors.py`. Here's how it can be used for an arbitrary set of classes:
+```bash
+(base) atharvas@linux:/var/local/atharvas/f/escher$ conda activate escher-dev
+(escher-dev) atharvas@linux:/var/local/atharvas/f/escher$ ipython
+Python 3.12.0 | packaged by conda-forge | (main, Oct  3 2023, 08:43:22) [GCC 12.3.0]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 9.0.2 -- An enhanced Interactive Python. Type '?' for help.
+Tip: Use `object?` to see the help on `object`, `object??` to view it's source
+
+In [1]: from escher.utils.generate_cbd_descriptors import generate_cbd_descriptors
+
+In [2]: generate_cbd_descriptors(["Black-Footed Albatross", "Laysian Albatross"])
+100%|██████████████████████████████████████████████████████████| 2/2 [00:04<00:00,  2.06s/it]
+Out[2]: 
+[['large seabird',
+  'white head, neck, and underparts',
+  'dark grey or black back, wings, and tail',
+  'long, narrow wings',
+  'hooked beak',
+  'dark, piercing eyes',
+  'webbed feet with black claws',
+  'black feet and legs',],
+ ['large seabird',
+  'white feathers on head, neck, and underbelly',
+  'dark grey or black feathers on back, wings, and tail',
+  'long, narrow wings',
+  'hooked beak',
+  'webbed feet with sharp claws',
+  'distinct black eye patch',]]
+```
+
+
 ## General Structure
 
 - `escher/`

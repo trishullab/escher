@@ -8,7 +8,7 @@ packages = ["escher"]
 [project]
 name = "escher"
 version = "0.0.1"
-description = "Escher"
+description = "Escher: Self-Evolving Visual Concept Library using Vision-Language Critics"
 readme = "README.md"
 requires-python = ">=3.10"
 

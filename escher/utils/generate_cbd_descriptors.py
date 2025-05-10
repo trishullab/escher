@@ -32,7 +32,7 @@ A: There are several useful visual features to tell there is a television in a p
 - input ports for connecting to other devices
 - a remote control
 
-Q: What are useful features for distinguishing a {category_name} in a photo? Give me atleast 19 features.
+Q: What are useful features for distinguishing a {category_name} in a photo?
 A: There are several useful visual features to tell there is a {category_name} in a photo:
 -"""
 
